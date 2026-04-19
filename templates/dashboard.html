@@ -1,11 +1,123 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
-    <h2>Dashboard</h2>
-    <p>Login successful.</p>
-    <a href="/logout/">Logout</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Dashboard · Apartment Item Exchange{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
+    <div class="container">
+        <a class="navbar-brand brand" href="{% url 'dashboard' %}">
+            <i class="bi bi-building-fill"></i>
+            Apartment Exchange
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small d-none d-md-inline">{{ user.email }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2 class="h4 mb-1">Welcome back, {{ user.full_name }}</h2>
+        <p class="text-muted mb-0 small">Here's a quick snapshot of your account.</p>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-md-6">
+            <div class="card card-soft h-100">
+                <div class="card-body">
+                    <h3 class="h6 text-muted mb-3">
+                        <i class="bi bi-person-circle me-1"></i>
+                        Profile
+                    </h3>
+                    <dl class="row mb-0 small">
+                        <dt class="col-sm-4">Full name</dt>
+                        <dd class="col-sm-8">{{ user.full_name }}</dd>
+
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">{{ user.email }}</dd>
+
+                        <dt class="col-sm-4">Phone</dt>
+                        <dd class="col-sm-8">{{ user.phone }}</dd>
+
+                        <dt class="col-sm-4">Verification</dt>
+                        <dd class="col-sm-8">
+                            {% if user.verification_status == 'verified' %}
+                                <span class="badge text-bg-success">Verified</span>
+                            {% elif user.verification_status == 'pending' %}
+                                <span class="badge text-bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge text-bg-danger">{{ user.verification_status|title }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Account</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge text-bg-secondary">{{ user.account_status|title }}</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Last login</dt>
+                        <dd class="col-sm-8">
+                            {% if user.last_login %}
+                                {{ user.last_login|date:"M j, Y · H:i" }}
+                            {% else %}
+                                <span class="text-muted">First login</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-soft h-100">
+                <div class="card-body">
+                    <h3 class="h6 text-muted mb-3">
+                        <i class="bi bi-house-door me-1"></i>
+                        Residence
+                    </h3>
+                    {% if apartment %}
+                        <dl class="row mb-0 small">
+                            <dt class="col-sm-4">Complex</dt>
+                            <dd class="col-sm-8">{{ complex_obj.complex_name }}</dd>
+
+                            <dt class="col-sm-4">Address</dt>
+                            <dd class="col-sm-8">{{ complex_obj.address }}</dd>
+
+                            <dt class="col-sm-4">Building</dt>
+                            <dd class="col-sm-8">{{ building.building_no }}</dd>
+
+                            <dt class="col-sm-4">Unit</dt>
+                            <dd class="col-sm-8">{{ apartment.unit_no }}</dd>
+
+                            <dt class="col-sm-4">Floor</dt>
+                            <dd class="col-sm-8">{{ apartment.floor_no }}</dd>
+                        </dl>
+                    {% else %}
+                        <p class="text-muted small mb-0">No apartment linked to this account yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card card-soft mt-3">
+        <div class="card-body">
+            <h3 class="h6 text-muted mb-2">
+                <i class="bi bi-info-circle me-1"></i>
+                What's next
+            </h3>
+            <p class="small mb-0 text-muted">
+                Login is working. The next modules to build are posts, offers, and
+                transactions — all tables are already in your database and ready
+                to be wired up with Django views.
+            </p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
